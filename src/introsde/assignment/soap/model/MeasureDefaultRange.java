@@ -26,7 +26,7 @@ public class MeasureDefaultRange implements Serializable {
 	@GeneratedValue(generator="sqlite_range")
 	@TableGenerator(name="sqlite_range", table="sqlite_sequence",
 	    pkColumnName="name", valueColumnName="seq",
-	    pkColumnValue="MeasureDefaultRange")
+	    pkColumnValue="MeasureDefaultRange", allocationSize=1)
 	@Column(name="idRange")
 	private int idRange;
 

@@ -36,7 +36,7 @@ public class LifeStatus implements Serializable {
 	@GeneratedValue(generator="sqlite_lifestatus")
 	@TableGenerator(name="sqlite_lifestatus", table="sqlite_sequence",
 	    pkColumnName="name", valueColumnName="seq",
-	    pkColumnValue="LifeStatus")
+	    pkColumnValue="LifeStatus", allocationSize=1)
 	@Column(name = "idMeasure")
 	private int idMeasure;
 

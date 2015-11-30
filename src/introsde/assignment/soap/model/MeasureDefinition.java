@@ -25,7 +25,7 @@ public class MeasureDefinition implements Serializable {
 	@GeneratedValue(generator="sqlite_measuredef")
 	@TableGenerator(name="sqlite_measuredef", table="sqlite_sequence",
 	    pkColumnName="name", valueColumnName="seq",
-	    pkColumnValue="MeasureDefinition")
+	    pkColumnValue="MeasureDefinition", allocationSize=1)
 	@Column(name="idMeasureDef")
 	private int idMeasureDef;
 

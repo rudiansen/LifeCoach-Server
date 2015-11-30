@@ -38,7 +38,7 @@ public class HealthMeasureHistory implements Serializable {
 	@GeneratedValue(generator="sqlite_mhistory")
 	@TableGenerator(name="sqlite_mhistory", table="sqlite_sequence",
 	    pkColumnName="name", valueColumnName="seq",
-	    pkColumnValue="HealthMeasureHistory")
+	    pkColumnValue="HealthMeasureHistory", allocationSize=1)
 	@Column(name="idMeasureHistory")
 	private int idMeasureHistory;
 
