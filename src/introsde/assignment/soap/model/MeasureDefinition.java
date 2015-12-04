@@ -1,14 +1,15 @@
 package introsde.assignment.soap.model;
 
-import introsde.assignment.soap.dao.LifePlayerDao;
-import introsde.assignment.soap.model.MeasureDefaultRange;
+import introsde.assignment.soap.dao.LifeCoachDao;
+import introsde.assignment.soap.model.MeasureDefinition;
 
 import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.*;
-import javax.xml.bind.annotation.XmlRootElement;
-
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
 /**
  * The persistent class for the "MeasureDefinition" database table.
@@ -16,8 +17,12 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name="MeasureDefinition")
-@NamedQuery(name="MeasureDefinition.findAll", query="SELECT m FROM MeasureDefinition m")
-@XmlRootElement
+@NamedQueries({
+	@NamedQuery(name="MeasureDefinition.findAll", query="SELECT m FROM MeasureDefinition m"),
+	@NamedQuery(name="MeasureDefinition.getIdMeasureDef", query="SELECT m FROM MeasureDefinition m "
+			+ "where lower(m.measureName) = :measureName")
+})
+@XmlAccessorType(XmlAccessType.NONE)
 public class MeasureDefinition implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -27,18 +32,22 @@ public class MeasureDefinition implements Serializable {
 	    pkColumnName="name", valueColumnName="seq",
 	    pkColumnValue="MeasureDefinition", allocationSize=1)
 	@Column(name="idMeasureDef")
+	@XmlElement
 	private int idMeasureDef;
 
 	@Column(name="measureName")
+	@XmlElement
 	private String measureName;
 
 	@Column(name="measureType")
+	@XmlElement
 	private String measureType;
 
-	@OneToMany(mappedBy="measureDefinition")
-	private List<MeasureDefaultRange> measureDefaultRange;
-
-	public MeasureDefinition() {
+	public MeasureDefinition(){		
+	}
+	
+	public MeasureDefinition(int idMeasureDef) {
+		this.idMeasureDef = idMeasureDef;
 	}
 
 	public int getIdMeasureDef() {
@@ -64,58 +73,79 @@ public class MeasureDefinition implements Serializable {
 	public void setMeasureType(String measureType) {
 		this.measureType = measureType;
 	}
-
-	public List<MeasureDefaultRange> getMeasureDefaultRange() {
-	    return measureDefaultRange;
-	}
-
-	public void setMeasureDefaultRange(List<MeasureDefaultRange> param) {
-	    this.measureDefaultRange = param;
-	}
-
+	
 	// database operations
 	public static MeasureDefinition getMeasureDefinitionById(int personId) {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		
+		//Refresh the entity manager
+        em.getEntityManagerFactory().getCache().evictAll();
+        
 		MeasureDefinition p = em.find(MeasureDefinition.class, personId);
-		LifePlayerDao.instance.closeConnections(em);
+		LifeCoachDao.instance.closeConnections(em);
 		return p;
 	}
 	
 	public static List<MeasureDefinition> getAll() {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		
+		//Refresh the entity manager
+        em.getEntityManagerFactory().getCache().evictAll();
+        
 	    List<MeasureDefinition> list = em.createNamedQuery("MeasureDefinition.findAll", MeasureDefinition.class).getResultList();
-	    LifePlayerDao.instance.closeConnections(em);
+	    LifeCoachDao.instance.closeConnections(em);
 	    return list;
 	}
 	
+	public static MeasureDefinition getIdMeasureDef(String measureName) {
+		EntityManager em = null;
+		MeasureDefinition measureDef = null;
+		
+		try{
+			em = LifeCoachDao.instance.createEntityManager();
+			
+			//Refresh the entity manager
+	        em.getEntityManagerFactory().getCache().evictAll();
+	        
+			measureDef = em.createNamedQuery("MeasureDefinition.getIdMeasureDef", MeasureDefinition.class)
+		    		.setParameter("measureName", measureName)
+		    		.getSingleResult();
+		}
+		catch(Exception e){e.printStackTrace();}
+		finally{
+			LifeCoachDao.instance.closeConnections(em);
+		}
+	    return measureDef;
+	}
+	
 	public static MeasureDefinition saveMeasureDefinition(MeasureDefinition p) {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		em.persist(p);
 		tx.commit();
-	    LifePlayerDao.instance.closeConnections(em);
+	    LifeCoachDao.instance.closeConnections(em);
 	    return p;
 	}
 	
 	public static MeasureDefinition updateMeasureDefinition(MeasureDefinition p) {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		p=em.merge(p);
 		tx.commit();
-	    LifePlayerDao.instance.closeConnections(em);
+	    LifeCoachDao.instance.closeConnections(em);
 	    return p;
 	}
 	
 	public static void removeMeasureDefinition(MeasureDefinition p) {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 	    p=em.merge(p);
 	    em.remove(p);
 	    tx.commit();
-	    LifePlayerDao.instance.closeConnections(em);
+	    LifeCoachDao.instance.closeConnections(em);
 	}
 }
 

@@ -1,6 +1,8 @@
 package introsde.assignment.soap.ws;
 
+import introsde.assignment.soap.model.HealthMeasureHistory;
 import introsde.assignment.soap.model.LifeStatus;
+import introsde.assignment.soap.model.MeasureDefinition;
 import introsde.assignment.soap.model.Person;
 
 import java.util.List;
@@ -39,4 +41,21 @@ public interface People {
     @WebMethod(operationName="updatePersonHealthProfile")
     @WebResult(name="hpId") 
     public int updatePersonHP(@WebParam(name="personId") int id, @WebParam(name="healthProfile") LifeStatus hp);
+    
+    @WebMethod(operationName="readPersonHistory")
+    @WebResult(name="personHistory") 
+    public List<HealthMeasureHistory> readPersonHistory(@WebParam(name="personId") int id, @WebParam(name="measureType") String mt);
+    
+    @WebMethod(operationName="readMeasureTypes")
+    @WebResult(name="measureTypes") 
+    public List<MeasureDefinition> readMeasureTypes();
+    
+    @WebMethod(operationName="readPersonMeasure")
+    @WebResult(name="personMeasure") 
+    public HealthMeasureHistory readPersonMeasure(@WebParam(name="personId") int id, @WebParam(name="measureType") String mt,
+    		@WebParam(name="measureId") int mid);
+    
+    @WebMethod(operationName="savePersonMeasure")
+    @WebResult(name="healthProfile") 
+    public LifeStatus savePersonMeasure(@WebParam(name="personId") int id, @WebParam(name="healthProfile") LifeStatus hp);
 }

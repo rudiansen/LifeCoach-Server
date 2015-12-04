@@ -1,17 +1,18 @@
 package introsde.assignment.soap.model;
 
-import introsde.assignment.soap.dao.LifePlayerDao;
+import introsde.assignment.soap.dao.LifeCoachDao;
 import introsde.assignment.soap.model.LifeStatus;
 
 import java.io.Serializable;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
-import java.util.Date;
 import java.util.List;
-
 
 /**
  * The persistent class for the "Person" database table.
@@ -20,36 +21,35 @@ import java.util.List;
 @Entity
 @Table(name="Person")
 @NamedQuery(name="Person.findAll", query="SELECT p FROM Person p")
-@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Person implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Id
-	// For sqlite in particular, you need to use the following @GeneratedValue annotation
-	// This holds also for the other tables
-	// SQLITE implements auto increment ids through named sequences that are stored in a 
-	// special table named "sqlite_sequence"
+	@Id	
 	@GeneratedValue(generator="sqlite_person")
 	@TableGenerator(name="sqlite_person", table="sqlite_sequence",
 	    pkColumnName="name", valueColumnName="seq",
 	    pkColumnValue="Person", allocationSize=1)
 	@Column(name="idPerson")
+	@XmlElement(name="personId")
 	private int idPerson;
 
-	@Column(name="lastname")
-	private String lastname;
-
 	@Column(name="name")
+	@XmlElement(name="firstname")
 	private String name;
+	
+	@Column(name="lastname")
+	private String lastname;	
 
 	@Column(name="username")
+	@XmlTransient
 	private String username;
 	
-	@Temporal(TemporalType.DATE)
 	@Column(name="birthdate")
-	private Date birthdate;
+	private String birthdate;
 	
 	@Column(name="email")
+	@XmlTransient
 	private String email;
 
 	// mappedBy must be equal to the name of the attribute in LifeStatus that maps this relation
@@ -58,12 +58,12 @@ public class Person implements Serializable {
 	
 	public Person() {
 	}
-	
-	public Date getBirthdate() {
+		
+	public String getBirthdate() {
 		return this.birthdate;
 	}
 
-	public void setBirthdate(Date birthdate) {
+	public void setBirthdate(String birthdate) {
 		this.birthdate = birthdate;
 	}
 
@@ -106,62 +106,67 @@ public class Person implements Serializable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-
-	// the XmlElementWrapper defines the name of node in which the list of LifeStatus elements
-	// will be inserted
-	@XmlElementWrapper(name = "Measurements")
-	public List<LifeStatus> getLifeStatus() {
-	    return lifeStatus;
-	}
-
+		
 	public void setLifeStatus(List<LifeStatus> param) {
 	    this.lifeStatus = param;
 	}
 	
+	public List<LifeStatus> getLifeStatus() {
+	    return lifeStatus;
+	}
+
 	// Database operations
 	// Notice that, for this example, we create and destroy and entityManager on each operation. 
 	// How would you change the DAO to not having to create the entity manager every time? 
 	public static Person getPersonById(int personId) {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		
+		//Refresh the entity manager
+        em.getEntityManagerFactory().getCache().evictAll();
+        
 		Person p = em.find(Person.class, personId);
-		LifePlayerDao.instance.closeConnections(em);
+		LifeCoachDao.instance.closeConnections(em);
 		return p;
 	}
 	
 	public static List<Person> getAll() {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
+		
+		//Refresh the entity manager
+        em.getEntityManagerFactory().getCache().evictAll();
+        
 	    List<Person> list = em.createNamedQuery("Person.findAll", Person.class).getResultList();
-	    LifePlayerDao.instance.closeConnections(em);
+	    LifeCoachDao.instance.closeConnections(em);
 	    return list;
 	}
 	
 	public static Person savePerson(Person p) {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		em.persist(p);
 		tx.commit();
-	    LifePlayerDao.instance.closeConnections(em);
+	    LifeCoachDao.instance.closeConnections(em);
 	    return p;
 	}
 	
 	public static Person updatePerson(Person p) {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		p=em.merge(p);
 		tx.commit();
-	    LifePlayerDao.instance.closeConnections(em);
+	    LifeCoachDao.instance.closeConnections(em);
 	    return p;
 	}
 	
 	public static void removePerson(Person p) {
-		EntityManager em = LifePlayerDao.instance.createEntityManager();
+		EntityManager em = LifeCoachDao.instance.createEntityManager();
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 	    p=em.merge(p);
 	    em.remove(p);
 	    tx.commit();
-	    LifePlayerDao.instance.closeConnections(em);
+	    LifeCoachDao.instance.closeConnections(em);
 	}
 }
