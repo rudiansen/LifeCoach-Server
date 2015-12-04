@@ -40,11 +40,13 @@ public interface People {
     
     @WebMethod(operationName="updatePersonHealthProfile")
     @WebResult(name="hpId") 
-    public int updatePersonHP(@WebParam(name="personId") int id, @WebParam(name="healthProfile") LifeStatus hp);
+    public int updatePersonHP(@WebParam(name="personId") int id, 
+    		@WebParam(name="healthProfile") LifeStatus hp);
     
     @WebMethod(operationName="readPersonHistory")
     @WebResult(name="personHistory") 
-    public List<HealthMeasureHistory> readPersonHistory(@WebParam(name="personId") int id, @WebParam(name="measureType") String mt);
+    public List<HealthMeasureHistory> readPersonHistory(@WebParam(name="personId") int id, 
+    		@WebParam(name="measureType") String mt);
     
     @WebMethod(operationName="readMeasureTypes")
     @WebResult(name="measureTypes") 
@@ -52,10 +54,12 @@ public interface People {
     
     @WebMethod(operationName="readPersonMeasure")
     @WebResult(name="personMeasure") 
-    public HealthMeasureHistory readPersonMeasure(@WebParam(name="personId") int id, @WebParam(name="measureType") String mt,
+    public HealthMeasureHistory readPersonMeasure(@WebParam(name="personId") int id, 
+    		@WebParam(name="measureType") String mt,
     		@WebParam(name="measureId") int mid);
     
     @WebMethod(operationName="savePersonMeasure")
     @WebResult(name="healthProfile") 
-    public LifeStatus savePersonMeasure(@WebParam(name="personId") int id, @WebParam(name="healthProfile") LifeStatus hp);
+    public LifeStatus savePersonMeasure(@WebParam(name="personId") int id, 
+    		@WebParam(name="healthProfile") LifeStatus hp);
 }

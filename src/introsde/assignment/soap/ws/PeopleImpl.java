@@ -56,8 +56,7 @@ public class PeopleImpl implements People {
 		        	idMeasureDef = measureDef.getIdMeasureDef();
 		        	life.getMeasureDefinition().setIdMeasureDef(idMeasureDef);
 	        	}
-	        }
-	      
+	        }	      
 			Person.savePerson(person);
 		}
 		else
@@ -116,8 +115,7 @@ public class PeopleImpl implements People {
     	MeasureDefinition measureDef = MeasureDefinition.getIdMeasureDef(hp.getMeasureDefinition().getMeasureName());
     	idMeasureDef = measureDef.getIdMeasureDef();
     	
-    	LifeStatus ls = LifeStatus.getLifeStatusById(hp.getIdMeasure());
-    	
+    	LifeStatus ls = LifeStatus.getLifeStatusById(hp.getIdMeasure());    	
     	if(ls.getPerson().getIdPerson() == id){
     		hp.setPerson(person);
     		hp.setMeasureDefinition(new MeasureDefinition(idMeasureDef));
