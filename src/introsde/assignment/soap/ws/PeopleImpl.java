@@ -76,6 +76,10 @@ public class PeopleImpl implements People {
 		else {
 			int idMeasureDef = 0;
 	    	
+			//Preserve invisible properties
+			person.setEmail(existing.getEmail());
+			person.setUsername(existing.getUsername());
+			
 	        //Preserve current LifeStatus. Prevent duplicate entry with different idMeasure
 	        List<LifeStatus> list = person.getLifeStatus();	       
 	        for(LifeStatus lifeStatus: list){
